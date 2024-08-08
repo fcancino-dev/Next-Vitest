@@ -1,19 +1,18 @@
-// Code: Button component
 "use client";
 import React from "react";
+import { useState } from "react";
 
 export default function Button() {
-  const handleClick = () => {
-    console.log("button clicked");
-  };
+  const [botontext, setBotontext] = useState(false);
+
   return (
     <>
       <button
         type="button"
         className="text-2xl font-bold underline text-black"
-        onClick={handleClick}
+        onClick={() => setBotontext(true)}
       >
-        Click me
+        {botontext ? "Clic" : "Hazme clic"}
       </button>
     </>
   );
