@@ -1,17 +1,34 @@
-import GithubUser from "../github-user/page";
+import React from "react";
+import GithubUser from "./components/GithubUser";
 
-async function fetchUserData() {
-  const res = await fetch("https://api.github.com/users/fcancino-dev");
-  const data = await res.json();
-  return data;
+interface User {
+  login: string;
+  avatar_url: string;
+  html_url: string;
 }
 
-export default async function Home() {
-  const userData = await fetchUserData();
+interface HomeProps {
+  user: User;
+}
 
+const Home: React.FC<HomeProps> = ({ user }) => {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24 ">
-      <GithubUser data={userData} />
-    </main>
+    <div>
+      <h1>GitHub User Information</h1>
+      <GithubUser user={user} />
+    </div>
   );
+};
+
+export async function getServerProps() {
+  const res = await fetch("https://api.github.com/users/fcancino-dev");
+  const user = await res.json();
+
+  return {
+    props: {
+      user,
+    },
+  };
 }
+
+export default Home;

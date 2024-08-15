@@ -1,54 +1,35 @@
-// __tests__/home.test.tsx
+import { describe, it, expect, vi } from "vitest";
 import { render, screen, waitFor } from "@testing-library/react";
-import { vi } from "vitest";
-import Home from "../src/app/page";
-import Image from "next/image";
+import "@testing-library/jest-dom";
+import React from "react";
+import Page from "../src/app/page";
 
-// Mock del componente Image de Next.js
-vi.mock("next/image", () => ({
-  default: ({
-    src,
-    alt,
-    width,
-    height,
-  }: {
-    src: string;
-    alt: string;
-    width: number;
-    height: number;
-  }) => <Image src={src} alt={alt} width={width} height={height} />,
-}));
+describe("Home page", () => {
+  it("should fetch and display GitHub user information", async () => {
+    const mockResponse = {
+      login: "fcancino-dev",
+      avatar_url: "https://avatars.githubusercontent.com/u/129630901?v=4",
+      html_url: "https://github.com/fcancino-dev",
+    };
 
-// Mock de la función fetch
-global.fetch = vi.fn(
-  () =>
-    Promise.resolve({
-      json: () =>
-        Promise.resolve({
-          login: "fcancino-dev",
-          avatar_url: "https://avatars.githubusercontent.com/u/38081852?v=4",
-          html_url: "https://api.github.com/users/fcancino-dev",
-        }),
-    }) as Promise<Response>
-);
+    global.fetch = vi.fn(() =>
+      Promise.resolve({
+        json: () => Promise.resolve(mockResponse),
+      })
+    ) as any;
 
-describe("Home Page", () => {
-  test("fetches and displays user data", async () => {
-    render(<Home />);
+    render(<Page user={mockResponse} />);
 
-    // Espera a que los datos se muestren en la pantalla
-    await waitFor(() => {
-      expect(screen.getByText("Username: fcancino-dev")).toBeInTheDocument();
-      const img = screen.getByAltText(/fcancino-dev/i);
-      expect(img).toHaveAttribute(
-        "src",
-        "https://avatars.githubusercontent.com/u/38081852?v=4"
-      );
-      expect(
-        screen.getByText(
-          /Profile URL: https:\/\/api.github.com\/users\/fcancino-dev/i
-        )
-      ).toBeInTheDocument();
+    await waitFor(() =>
+      expect(screen.getByText("fcancino-dev")).toBeInTheDocument()
+    );
+    const avatarImage = screen.getByRole("img", {
+      name: /fcancino-dev's avatar/i,
     });
+    expect(avatarImage).toBeInTheDocument();
+    expect(screen.getByText("Visit Profile")).toHaveAttribute(
+      "href",
+      "https://github.com/fcancino-dev"
+    );
   });
 });
