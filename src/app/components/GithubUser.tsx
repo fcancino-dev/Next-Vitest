@@ -14,7 +14,7 @@ const GithubUser: React.FC<{ user: User }> = ({ user }) => {
   return (
     <div className="">
       <h1>{user.login}</h1>
-      <Image
+      <img
         src={user.avatar_url}
         alt={`${user.login}'s avatar`}
         width={100}

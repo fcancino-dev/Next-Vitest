@@ -7,11 +7,17 @@ interface User {
   html_url: string;
 }
 
-interface HomeProps {
-  user: User;
-}
+const Home = async () => {
+  const res = await fetch("https://api.github.com/users/fcancino-dev", {
+    cache: "no-store", // Opcional: Asegura que obtienes los datos más recientes en cada solicitud
+  });
 
-const Home: React.FC<HomeProps> = ({ user }) => {
+  if (!res.ok) {
+    throw new Error("Failed to fetch user");
+  }
+
+  const user: User = await res.json();
+
   return (
     <div>
       <h1>GitHub User Information</h1>
@@ -19,16 +25,4 @@ const Home: React.FC<HomeProps> = ({ user }) => {
     </div>
   );
 };
-
-export async function getServerProps() {
-  const res = await fetch("https://api.github.com/users/fcancino-dev");
-  const user = await res.json();
-
-  return {
-    props: {
-      user,
-    },
-  };
-}
-
 export default Home;
