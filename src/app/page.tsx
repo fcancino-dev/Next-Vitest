@@ -19,10 +19,14 @@ const Home = async () => {
   const user: User = await res.json();
 
   return (
-    <div>
-      <h1>GitHub User Information</h1>
-      <GithubUser user={user} />
-    </div>
+    <>
+      <div className="flex flex-col items-center justify-center h-screen g">
+        <div className="shadow-xl p-8 bg-slate-200 rounded-lg space-y-5">
+          <h1 className="text-2xl font-bold">GitHub User Information</h1>
+          <GithubUser user={user} />
+        </div>
+      </div>
+    </>
   );
 };
 export default Home;
